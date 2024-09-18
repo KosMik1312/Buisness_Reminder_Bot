@@ -1,0 +1,17 @@
+aiofiles
+aiogram
+aiohttp
+aiosignal
+annotated-types
+attrs
+certifi
+frozenlist
+idna
+magic-filter
+multidict
+pydantic
+pydantic-settings
+pydantic_core
+python-dotenv
+typing_extensions
+yarl
