@@ -17,6 +17,18 @@ class Database:
                     completed BOOLEAN DEFAULT FALSE
                 )
             """)
+            
+            await db.execute("""
+                CREATE TABLE IF NOT EXISTS reminders (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    task_id INTEGER NOT NULL,
+                    reminder_date TIMESTAMP NOT NULL,
+                    user_id INTEGER NOT NULL,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    FOREIGN KEY (task_id) REFERENCES tasks(id)
+                )
+            """)
+            
             await db.commit()
 
     async def add_task(self, task: str, importance: str):
@@ -47,4 +59,18 @@ class Database:
                 "UPDATE tasks SET completed = TRUE WHERE id = ?",
                 (task_id,)
             )
+            await db.commit()
+
+    async def get_task_by_id(self, task_id: int):
+        async with aiosqlite.connect(self.db_name) as db:
+            async with db.execute("SELECT * FROM tasks WHERE id = ?", (task_id,)) as cursor:
+                return await cursor.fetchone()
+
+    async def set_reminder(self, task_id: int, reminder_date: datetime, user_id: int):
+        async with aiosqlite.connect(self.db_name) as db:
+            query = """
+            INSERT INTO reminders (task_id, reminder_date, user_id)
+            VALUES (?, ?, ?)
+            """
+            await db.execute(query, (task_id, reminder_date, user_id))
             await db.commit()

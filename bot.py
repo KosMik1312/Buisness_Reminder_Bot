@@ -23,14 +23,15 @@ db = Database()
 dp.include_router(router)
 
 # Настройка команд бота
-async def set_commands():
+async def set_commands(bot: Bot):
     commands = [
         BotCommand(command="start", description="Запустить бота"),
-        BotCommand(command="help", description="Помощь"),
+        BotCommand(command="help", description="Показать справку"),
         BotCommand(command="todo", description="Добавить задачу"),
-        BotCommand(command="list", description="Список невыполненных задач"),
-        BotCommand(command="listall", description="Все задачи"),
-        BotCommand(command="retask", description="Отметить задачу выполненной")
+        BotCommand(command="list", description="Показать текущие задачи"),
+        BotCommand(command="listall", description="Показать все задачи"),
+        BotCommand(command="retask", description="Отметить задачу выполненной"),
+        BotCommand(command="reminder", description="Установить напоминание для задачи")
     ]
     await bot.set_my_commands(commands)
 
@@ -39,7 +40,7 @@ async def main():
     logger.info("Bot started")
     try:
         # Установка команд в меню
-        await set_commands()
+        await set_commands(bot)
         await db.init()
         # Удаляем незавершенные обновления
         await bot.delete_webhook(drop_pending_updates=True)
